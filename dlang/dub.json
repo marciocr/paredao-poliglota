@@ -1,0 +1,11 @@
+{
+	"name": "paredao",
+	"description": "Paredão em D com SDL2 (bindbc-sdl), inspirado no Breakout da Atari",
+	"license": "MIT",
+	"targetType": "executable",
+	"targetName": "paredao",
+	"dependencies": {
+		"bindbc-sdl": "~>1.5.3"
+	},
+	"versions": ["SDL_2018"]
+}

@@ -1,0 +1,3 @@
+requires 'perl', '5.024';
+requires 'FFI::Platypus', '2.00';
+requires 'FFI::CheckLib';

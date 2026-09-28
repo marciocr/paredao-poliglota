@@ -1,0 +1,26 @@
+# C++
+cpp/build/
+
+# Rust
+rust/target/
+
+# Go
+go/paredao
+
+# D
+dlang/.dub/
+dlang/paredao
+
+# Pascal
+pascal/build/
+
+# Python
+__pycache__/
+.venv/
+
+# Java
+java/target/
+
+# C#
+csharp/bin/
+csharp/obj/

@@ -48,4 +48,8 @@ jobs:
         run: make build-${{ matrix.lang }}
 
       - name: Equivalência
-        run: make test-${{ matrix.lang }}
+        run: |
+          set -o pipefail
+          make test-${{ matrix.lang }} | tee saida.txt
+          # Garante que o teste rodou de verdade (e não passou em vazio).
+          grep -q "estão idênticas ao esperado" saida.txt

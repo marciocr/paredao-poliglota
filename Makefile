@@ -37,7 +37,7 @@ build-csharp:
 
 test:
 	tests/run.sh
-test-%:
+$(addprefix test-,$(LANGS)): test-%:
 	tests/run.sh $*
 update-expected:
 	tests/run.sh --update

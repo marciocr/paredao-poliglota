@@ -3,9 +3,9 @@
 program paredao;
 
 {$mode objfpc}{$H+}
-{ Sem isto, o FPC 3.2+ dá a cada constante real o menor tipo que representa
-  seus literais: STEP = 1.0 / 120.0 seria calculado em Single (32 bits) e a
-  física divergiria das outras linguagens, que usam Double. }
+{ O FPC 3.2+ calcula a expressão de uma constante real no menor tipo que
+  representa seus literais: 1.0 / 120.0 sairia em Single (32 bits). Esta diretiva
+  faz as constantes serem avaliadas, no mínimo, em precisão dupla. }
 {$MINFPCONSTPREC 64}
 
 uses
@@ -27,11 +27,14 @@ const
   PADDLE_H = 8;
   PADDLE_W = 64;
   BALL = 8;
-  PADDLE_SPEED = 480.0;  { px/s }
-  BALL_SPEED = 240.0;  { velocidade base }
-  SPEED_STEP = 60.0;  { acréscimo por nível de velocidade }
+  { Constantes reais como Double tipado. Uma constante sem tipo (X = 1.07) é
+    Extended: ao multiplicá-la por um Double o FPC faz a conta em x87, com 80
+    bits, e o resultado difere no último bit das outras linguagens. }
+  PADDLE_SPEED: Double = 480.0;  { px/s }
+  BALL_SPEED: Double = 240.0;  { velocidade base }
+  SPEED_STEP: Double = 60.0;  { acréscimo por nível de velocidade }
   START_LIVES = 3;  { não pode se chamar LIVES: Pascal não diferencia maiúsculas e colidiria com TGame.Lives }
-  STEP = 1.0 / 120.0;
+  STEP: Double = 1.0 / 120.0;
   RATE = 44100;
 
   ST_SERVE = 0;

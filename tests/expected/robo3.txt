@@ -1,0 +1,1 @@
+score=967 lives=1 state=1 paddle_x=32.0000 paddle_w=32 bx=38.0000 by=283.0436 vx=240.0000 vy=-415.6922 level=4 bricks=77

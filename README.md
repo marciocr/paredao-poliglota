@@ -1,5 +1,7 @@
 # paredao-poliglota
 
+[![testes](https://github.com/marciocr/paredao-poliglota/actions/workflows/test.yml/badge.svg)](https://github.com/marciocr/paredao-poliglota/actions/workflows/test.yml)
+
 O Paredão é um jogo de derrubar tijolos inspirado no **Breakout** (Atari, 1976),
 implementado em 10 linguagens sobre a **SDL2**. É o terceiro jogo da série,
 depois do [pong-poliglota](https://github.com/marciocr/pong-poliglota) e do
@@ -67,21 +69,34 @@ build e execução.
 
 ## Equivalência entre as versões
 
-As 10 implementações chegam **exatamente ao mesmo estado** para a mesma
-sequência de teclas. A verificação usou roteiros gravados de um "robô"
-jogando partidas longas, roteiros aleatórios e um roteiro de game over. No
-total foram 1.450 tijolos quebrados, 3 paredes novas, 29 vezes a raquete
-encolhendo, 70 bolas perdidas e 23 game overs com reinício. Em todos eles,
-placar, bolas, posição e velocidade da bola ficaram idênticos até a 4ª casa
-decimal.
+O jogo não tem aleatoriedade, então a mesma sequência de teclas leva as 10
+implementações **exatamente ao mesmo estado**. O `make test` aplica 8 roteiros
+(5 partidas longas de um robô, 2 de teclas aleatórias e um fim de jogo com
+reinício), que juntos passam por mais de 1.400 tijolos quebrados, paredes novas,
+raquete encolhendo e bolas perdidas, e exige resultados idênticos até a 4ª casa
+decimal. Detalhes em [`tests/README.md`](tests/README.md).
 
-A primeira versão calculava o ângulo de rebote com `sin`/`cos` contínuos, e
-aí Go, D, Pascal e Java divergiam das outras em partidas longas. Cada uma
-dessas linguagens tem a própria implementação de `sin`/`cos`, que pode
-diferir da `libm` do sistema no último bit do `double`. Depois de dezenas de
-rebotes, essa diferença de 1 ulp cresce até mudar uma colisão. A solução foi
-a tabela de 8 zonas com senos e cossenos escritos como **literais
+A primeira versão calculava o ângulo de rebote com `sin`/`cos` contínuos, e Go, D,
+Pascal e Java divergiam das outras em partidas longas. Cada linguagem tem a sua
+implementação de `sin`/`cos`, que pode diferir da `libm` no último bit do
+`double`, e depois de dezenas de rebotes essa diferença muda uma colisão. A
+solução foi a tabela de 8 zonas com senos e cossenos escritos como **literais
 decimais**, que todas as linguagens convertem para o mesmo `double`.
+
+No Pascal, as constantes reais são `Double` tipado, porque no FPC uma constante
+sem tipo é `Extended` (veja [`pascal/README.md`](pascal/README.md)).
+
+## Testes
+
+```bash
+make build   # compila as 10 versões, cada uma com o seu build system
+make test    # equivalência entre as 10 versões, sem abrir janela
+```
+
+O teste aplica roteiros de teclas à lógica **real** de cada versão e exige que o
+estado final seja idêntico, byte a byte, ao de [`tests/expected/`](tests/expected/).
+O CI do GitHub Actions roda isso para cada linguagem a cada push. Detalhes em
+[`tests/README.md`](tests/README.md).
 
 ## Dependências de sistema (Fedora)
 

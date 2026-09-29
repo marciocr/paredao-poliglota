@@ -1,0 +1,51 @@
+name: testes
+
+# Roda o teste de equivalência (tests/run.sh) uma vez por linguagem, em paralelo.
+# Cada job compila o jogo com o build system da linguagem e depois compara o
+# estado final de todos os roteiros com tests/expected/.
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  equivalencia:
+    name: ${{ matrix.lang }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        lang: [cpp, rust, go, dlang, pascal, perl, python, lua, java, csharp]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: SDL2 (cabeçalhos e biblioteca)
+        run: sudo apt-get update && sudo apt-get install -y libsdl2-dev
+
+      - name: Toolchain
+        run: |
+          case "${{ matrix.lang }}" in
+            cpp)    sudo apt-get install -y cmake g++ ;;
+            dlang)  sudo apt-get install -y ldc dub ;;
+            pascal) sudo apt-get install -y fp-compiler fp-units-rtl ;;
+            perl)   sudo apt-get install -y libffi-platypus-perl libffi-checklib-perl ;;
+            python) sudo apt-get install -y python3-sdl2 ;;
+            lua)    sudo apt-get install -y luajit ;;
+          esac
+
+      - uses: actions/setup-java@v4
+        if: matrix.lang == 'java'
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - uses: actions/setup-dotnet@v4
+        if: matrix.lang == 'csharp'
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Build
+        run: make build-${{ matrix.lang }}
+
+      - name: Equivalência
+        run: make test-${{ matrix.lang }}

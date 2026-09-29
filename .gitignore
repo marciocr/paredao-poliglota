@@ -24,3 +24,6 @@ java/target/
 # C#
 csharp/bin/
 csharp/obj/
+
+# testes
+tests/.build/

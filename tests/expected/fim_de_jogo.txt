@@ -1,0 +1,1 @@
+score=0 lives=3 state=0 paddle_x=564.0000 paddle_w=64 bx=592.0000 by=432.0000 vx=-120.0000 vy=207.8461 level=0 bricks=112

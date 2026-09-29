@@ -10,10 +10,17 @@ O programa mascara as exceções de ponto flutuante (`SetExceptionMask`) antes
 de iniciar a SDL, que é o procedimento padrão em FPC: drivers de vídeo e áudio
 podem gerar exceções de FPU que o runtime do Pascal trataria como erro fatal.
 
-O código usa `{$MINFPCONSTPREC 64}`. Desde o FPC 3.2, uma constante real sem
-tipo recebe o menor tipo de ponto flutuante que representa seus literais.
-Assim, `STEP = 1.0 / 120.0` seria calculado em `Single` (32 bits), e a física
-divergiria das outras linguagens, que usam `Double`. A diretiva força 64 bits.
+As constantes reais são declaradas como `Double` tipado (`SPEEDUP: Double = 1.07;`),
+e o código usa `{$MINFPCONSTPREC 64}`. Sem isso a física divergia das outras
+linguagens, por dois motivos que o teste de equivalência encontrou:
+
+1. O FPC 3.2+ calcula a expressão de uma constante real no menor tipo que
+   representa os literais. `STEP = 1.0 / 120.0` saía em `Single` (32 bits). A
+   diretiva exige, no mínimo, precisão dupla.
+2. Uma constante real **sem tipo** é `Extended`. Ao multiplicá-la por um `Double`,
+   o FPC faz a conta em x87, com 80 bits, e o resultado difere no último bit das
+   outras linguagens: `300 * 1.07 * 1.07 * 1.07` dá `367.5129` em vez de
+   `367.51290000000006`. Num rali de Pong esse bit cresce até separar as versões.
 
 Pascal não diferencia maiúsculas de minúsculas, então a constante das bolas
 iniciais se chama `START_LIVES`, e não `LIVES`. Com `LIVES`, dentro dos métodos
